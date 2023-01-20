@@ -1,12 +1,13 @@
-CC=gcc
-CFLAGS=-std=c89 -pedantic -Wall -Werror -g `pkg-config libxml-2.0 --cflags`
-
-bm.out :bm.c base.o facility.o
-	${CC} ${CFLAGS} -o bm.out bm.c base.o facility.o `pkg-config libxml-2.0 --libs-only-L` `pkg-config libxml-2.0 --libs-only-l`
-
-base.o:base.c
-	${CC} ${CFLAGS} -c -o base.o base.c
-
-facility.o:facility.c
-	${CC} ${CFLAGS} -c -o facility.o facility.c
-
+CXX=g++
+CXXFLAGS=-std=c++98 -pedantic -Wall -Werror -g  `pkg-config pugixml --cflags`
+LDFLAGS= `pkg-config pugixml --libs-only-L`
+LDLIBS= `pkg-config pugixml --libs-only-l`
+RM=rm -fv
+.PHONY: all clean
+all: edp.out
+%.o: %.cpp %.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+edp.out: edp.cpp address.o company.o envelope.o envelope-c4.o envelope-dl.o  str2i-error.o str2l-error.o 
+	$(CXX) $(CXXFLAGS)  -o $@ $^ $(LDFLAGS) $(LDLIBS)
+clean:
+	$(RM) *.o *.out
